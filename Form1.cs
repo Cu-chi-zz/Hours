@@ -150,11 +150,29 @@ namespace Hours
 
             try
             {
+                // Récup les données json de data.json
                 x = JsonConvert.DeserializeObject<Counter>(json);
+                // Vérifie si c'est bien en json
                 var obj = JToken.Parse(json);
             }
             catch
             {
+                /* Si les données dans data.json ne sont pas bonnes (pas json ou erreur dedans)
+                 * Alors on stop le timer (évite la boucle chaque seconde...)
+                 * Informe l'utilisateur
+                 * Demande si l'utilisateur souhaite appliqué une backup et si oui,
+                 * (1er try) on essaie de récupérer les informations dans data-backup.json comme pour le data.json
+                 * Supprime data.json et le recréé avec les infos de data-backup
+                 * Informe l'utilisateur que la backup à été appliqué,
+                 * si jamais data-backup n'est pas bon également, alors :
+                 * (2e try dans le catch) on essaie de récup les infos dans data-backup-old
+                 * et comme pour data-backup on supprime etc on remplace...
+                 * et si vraiment aucunes backups n'est valides, alors on supprime data.json et
+                 * les données de l'utilisateur reprennent alors à 0 !
+                 * On relance le timer ;)
+                 *
+                 * Si jamais l'utilisateur ne veut pas mettre de backup, on femre Hours :(
+                */
                 timer1.Stop();
                 LabelTotalTime.Text = "Les données sont erronées...";
                 DialogResult CantJson = MessageBox.Show($"La fichier de data est érroné, souhaitez-vous appliquer une backup ?", "Erreur :(", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
@@ -194,11 +212,17 @@ namespace Hours
                 return;
             }
 
+            // A faire fonctionner car pour l'instant, ne se démarre pas minimiser
+
             if (x.Minimize == true)
-                ButtonStartMinimized.Checked = true;
+                CheckBoxStartMinimized.Checked = true;
                 if(StartingByUser == false)
                     Hide();
 
+            /* Check si le temps n'est pas trop abusé si oui on ajoute rien et on dit que le temps à été modifié
+             * si non ajoute une seconde & la date
+             * Effectue une backup
+             */
             if (x.Time <= 9223372036854775806)
             {
                 Counter timeAdder = new Counter
@@ -228,8 +252,9 @@ namespace Hours
             double hours = minutes / 60;
             double days = hours / 24;
 
-            if(checkBox1.Checked == false)
+            if(CheckboxArrondir.Checked == false)
             {
+                // Si l'utilisateur n'a pas coché pour arrondir, on arrondit pas :)
                 LabelSeconds.Text = $"{x.Time} secondes";
                 LabelMinutes.Text = $"{Math.Round((double)minutes, 2)} minutes";
                 LabelHours.Text = $"{Math.Round((double)hours, 3)} heures";
@@ -240,6 +265,7 @@ namespace Hours
             }
             else
             {
+                // Si l'utilisateur a coché pour arrondir, on arrondit :)
                 LabelSeconds.Text = $"{x.Time} secondes";
                 LabelMinutes.Text = $"{Math.Round((double)minutes, 0)} minutes";
                 LabelHours.Text = $"{Math.Round((double)hours, 0)} heures";
@@ -248,6 +274,7 @@ namespace Hours
                 LabelFirstOpeningDate.Text = $"{x.Date}";
                 LabelDateNow.Text = $"{x.NowDate}";
             }
+            // ici je définis les variables qui seront utilisées si l'utilisateur partage.
             TotalSecondes = x.Time.ToString();
             TotalMinutes = Math.Round((double)minutes, 0).ToString();
             TotalHeures = Math.Round((double)hours, 0).ToString();
@@ -258,11 +285,13 @@ namespace Hours
 
         private void HoursForm_Load(object sender, EventArgs e)
         {
+            // Lors du démarage, on lance le timer
             InitTimer();
         }
 
         private void HideButton_Click(object sender, EventArgs e)
         {
+            // Si le bouton pour mettre en arrière plan
             DialogResult CloseMSgBox = MessageBox.Show("Souhaitez-vous vraiment mettre en arrière plan Hours ?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
             if (CloseMSgBox == DialogResult.Yes) Hide();
@@ -270,11 +299,17 @@ namespace Hours
 
         private void ButtonShare_Click(object sender, EventArgs e)
         {
+            // Bouton partager cliqué : message copié dans le presse-papier
             Clipboard.SetText($"⏲ === Hours Score === ⏲\nDepuis que j'ai lancé Hours le {FirstLauch} et la date à laquelle j'ai enregistré mon score le {NowDate}, j'ai passé ~{TotalHeures} heures sur mon pc soit :\n     {TotalSecondes} secondes\n     ~{TotalMinutes} minutes\n     ~{TotalJours} jours\nTélécharge toi aussi Hours ici : https://github.com/Cu-chi !");
         }
 
         private void ButtonReset_Click(object sender, EventArgs e)
         {
+            /* Boutton pour reset ses stats
+             * Demande de confirmer et si oui on reset les dates
+             * On fait une save
+             * Et on delete data.json
+            */
             DialogResult ResetMsgBox = MessageBox.Show($"Vous êtes sur le point de réinitialiser le temps enregistré.\nConfirmez-vous ?\n\nA noter qu'une sauvegarde sera effectuée, vous pourrez la trouver ici :\n{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\Hours\\save\\", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (ResetMsgBox == DialogResult.Yes)
             {
@@ -306,6 +341,7 @@ namespace Hours
 
         private void ButtonHelp_Click(object sender, EventArgs e)
         {
+            // Boutton d'aide
             MessageBox.Show("Lors du première démarage, un raccourci à été créé afin qu'Hours soit " +
                 "démarré à chaque lancement de votre ordinateur." +
                 "\nUn autre raccourci à été créé afin que vous puissiez trouver Hours en cherchant dans " +
@@ -318,6 +354,12 @@ namespace Hours
 
         private void BackUpFile()
         {
+            /* Fonction de backup, a chaque seconde, on check si
+             * backups existe, si non on le créé
+             * si le fichier data-backup-old existe, on le delete
+             * si le fichier data-back existe, on le copie en data-backup-old
+             * pour finir on copie data en data-backup
+            */
             string DataPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\Hours";
             if (!Directory.Exists($@"{DataPath}\backups")) Directory.CreateDirectory($@"{DataPath}\backups");
 
@@ -332,11 +374,12 @@ namespace Hours
 
         private void ButtonStartMinimized_CheckedChanged(object sender, EventArgs e)
         {
+            // Checkbox démarrer minimisé
             Counter timeAdder;
             string DataPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\Hours\data.json";
             string json = System.IO.File.ReadAllText(DataPath);
             Counter x = JsonConvert.DeserializeObject<Counter>(json);
-            if (ButtonStartMinimized.Checked == true)
+            if (CheckBoxStartMinimized.Checked == true)
             {
                 timeAdder = new Counter
                 {

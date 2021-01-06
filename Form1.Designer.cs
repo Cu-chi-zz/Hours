@@ -44,10 +44,10 @@
             this.LabelDateNow = new System.Windows.Forms.Label();
             this.LabelFirstLauch = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.CheckboxArrondir = new System.Windows.Forms.CheckBox();
             this.ButtonShare = new System.Windows.Forms.Button();
             this.ButtonReset = new System.Windows.Forms.Button();
-            this.ButtonStartMinimized = new System.Windows.Forms.CheckBox();
+            this.CheckBoxStartMinimized = new System.Windows.Forms.CheckBox();
             this.TopPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -222,15 +222,15 @@
             this.label1.TabIndex = 10;
             this.label1.Text = "Date :";
             // 
-            // checkBox1
+            // CheckboxArrondir
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(281, 176);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(115, 17);
-            this.checkBox1.TabIndex = 11;
-            this.checkBox1.Text = "Arrondir les valeurs";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.CheckboxArrondir.AutoSize = true;
+            this.CheckboxArrondir.Location = new System.Drawing.Point(281, 176);
+            this.CheckboxArrondir.Name = "CheckboxArrondir";
+            this.CheckboxArrondir.Size = new System.Drawing.Size(115, 17);
+            this.CheckboxArrondir.TabIndex = 11;
+            this.CheckboxArrondir.Text = "Arrondir les valeurs";
+            this.CheckboxArrondir.UseVisualStyleBackColor = true;
             // 
             // ButtonShare
             // 
@@ -258,16 +258,16 @@
             this.ButtonReset.UseVisualStyleBackColor = false;
             this.ButtonReset.Click += new System.EventHandler(this.ButtonReset_Click);
             // 
-            // ButtonStartMinimized
+            // CheckBoxStartMinimized
             // 
-            this.ButtonStartMinimized.AutoSize = true;
-            this.ButtonStartMinimized.Location = new System.Drawing.Point(281, 160);
-            this.ButtonStartMinimized.Name = "ButtonStartMinimized";
-            this.ButtonStartMinimized.Size = new System.Drawing.Size(111, 17);
-            this.ButtonStartMinimized.TabIndex = 14;
-            this.ButtonStartMinimized.Text = "Démarrer minimisé";
-            this.ButtonStartMinimized.UseVisualStyleBackColor = true;
-            this.ButtonStartMinimized.CheckedChanged += new System.EventHandler(this.ButtonStartMinimized_CheckedChanged);
+            this.CheckBoxStartMinimized.AutoSize = true;
+            this.CheckBoxStartMinimized.Location = new System.Drawing.Point(281, 160);
+            this.CheckBoxStartMinimized.Name = "CheckBoxStartMinimized";
+            this.CheckBoxStartMinimized.Size = new System.Drawing.Size(111, 17);
+            this.CheckBoxStartMinimized.TabIndex = 14;
+            this.CheckBoxStartMinimized.Text = "Démarrer minimisé";
+            this.CheckBoxStartMinimized.UseVisualStyleBackColor = true;
+            this.CheckBoxStartMinimized.CheckedChanged += new System.EventHandler(this.ButtonStartMinimized_CheckedChanged);
             // 
             // HoursForm
             // 
@@ -275,10 +275,10 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.ClientSize = new System.Drawing.Size(400, 200);
-            this.Controls.Add(this.ButtonStartMinimized);
+            this.Controls.Add(this.CheckBoxStartMinimized);
             this.Controls.Add(this.ButtonReset);
             this.Controls.Add(this.ButtonShare);
-            this.Controls.Add(this.checkBox1);
+            this.Controls.Add(this.CheckboxArrondir);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.LabelFirstLauch);
             this.Controls.Add(this.LabelDateNow);
@@ -321,8 +321,8 @@
         private System.Windows.Forms.Button ButtonShare;
         private System.Windows.Forms.Button ButtonReset;
         private System.Windows.Forms.Button ButtonHelp;
-        private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.CheckBox ButtonStartMinimized;
+        private System.Windows.Forms.CheckBox CheckboxArrondir;
+        private System.Windows.Forms.CheckBox CheckBoxStartMinimized;
     }
 }
 
