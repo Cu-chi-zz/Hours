@@ -1,0 +1,16 @@
+C:\Users\Ethan\source\repos\Hours\bin\Debug\Hours.exe.config
+C:\Users\Ethan\source\repos\Hours\bin\Debug\Hours.exe
+C:\Users\Ethan\source\repos\Hours\bin\Debug\Hours.pdb
+C:\Users\Ethan\source\repos\Hours\obj\Debug\Hours.csprojAssemblyReference.cache
+C:\Users\Ethan\source\repos\Hours\obj\Debug\Hours.Properties.Resources.resources
+C:\Users\Ethan\source\repos\Hours\obj\Debug\Hours.csproj.GenerateResource.cache
+C:\Users\Ethan\source\repos\Hours\obj\Debug\Hours.csproj.CoreCompileInputs.cache
+C:\Users\Ethan\source\repos\Hours\obj\Debug\Hours.exe
+C:\Users\Ethan\source\repos\Hours\obj\Debug\Hours.pdb
+C:\Users\Ethan\source\repos\Hours\obj\Debug\Hours.HoursForm.resources
+C:\Users\Ethan\source\repos\Hours\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Ethan\source\repos\Hours\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Ethan\source\repos\Hours\obj\Debug\Hours.csproj.CopyComplete
+C:\Users\Ethan\source\repos\Hours\obj\Debug\Interop.IWshRuntimeLibrary.dll
+C:\Users\Ethan\source\repos\Hours\obj\Debug\Hours.csproj.ResolveComReference.cache
+C:\Users\Ethan\source\repos\Hours\bin\Debug\Interop.IWshRuntimeLibrary.dll
