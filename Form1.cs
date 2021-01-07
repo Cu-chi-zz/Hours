@@ -9,6 +9,9 @@ using Newtonsoft.Json.Linq;
 
 // Started : 22.12.20
 
+// Laisser le choix de l'ouverture automatique
+// Avec un while file not exist, bloquer le décochage et idem si il exist
+
 namespace Hours
 {
     public partial class HoursForm : Form
@@ -28,6 +31,7 @@ namespace Hours
         public static string NowDate;
         public static Counter x;
         public static bool StartingByUser = false;
+        public static bool AlreadyMinimizeChecked = false;
 
         [DllImport("user32.dll")]
         public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
@@ -54,6 +58,11 @@ namespace Hours
             timer1.Interval = 1000;
             timer1.Start();
         }
+        private void HoursForm_Load(object sender, EventArgs e)
+        {
+            // Lors du démarage, on lance le timer
+            InitTimer();
+        }
 
         private void Timer1_Tick(object sender, EventArgs e) { MainHours(); }
         // Bouton pour minimiser
@@ -65,54 +74,28 @@ namespace Hours
             if (CloseMSgBox == DialogResult.Yes) Close();
         }
 
-
         public class Counter
         {
             public long Time { get; set; }
             public string Date { get; set; }
             public string NowDate { get; set; }
-            public bool Minimize { get; set; }
+            public bool StartWithWindows { get; set; }
         }
 
         private void MainHours()
         {
+
             // Check si le processus Hours est déjà en cours d'éxecution,
             // pour chaque processus, si l'id du processus est différent du current
-            // Fermer le processus qui est différent
+            // Fermer le processus qui est actuel (ce qui signifie qu'il y en a eu un nouveau d'ouvert
+            // Alors le laisser "prendre le dessus"
 
             Process[] HoursProc = Process.GetProcessesByName("Hours");
-            foreach(Process phours in HoursProc)
+            foreach (Process phours in HoursProc)
             {
-                if(phours.Id != Process.GetCurrentProcess().Id)
-                {
+                // Si ouverture auto true, alors vérifier ça, sinon ne pas effectuer la Hide si rien n'est démarré avant
+                if (phours.Id != Process.GetCurrentProcess().Id)
                     Close();
-                }
-                else
-                {
-                    StartingByUser = true;
-                }
-            }
-
-            string ShortCutBoot = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
-            string ShortCutPrograms = Environment.GetFolderPath(Environment.SpecialFolder.Programs);
-
-            if (!System.IO.File.Exists($@"{ShortCutBoot}\Hours.lnk"))
-            {
-                WshShellClass wsh = new WshShellClass();
-                IWshShortcut shortcut = wsh.CreateShortcut($@"{ShortCutBoot}\Hours.lnk") as IWshShortcut;
-                shortcut.TargetPath = System.Reflection.Assembly.GetEntryAssembly().Location;
-                shortcut.WindowStyle = 1;
-                shortcut.WorkingDirectory = ShortCutBoot;
-                shortcut.Save();
-            }
-            if (!System.IO.File.Exists($@"{ShortCutPrograms}\Hours.lnk"))
-            {
-                WshShellClass wsh = new WshShellClass();
-                IWshShortcut shortcut = wsh.CreateShortcut($@"{ShortCutPrograms}\Hours.lnk") as IWshShortcut;
-                shortcut.TargetPath = System.Reflection.Assembly.GetEntryAssembly().Location;
-                shortcut.WindowStyle = 1;
-                shortcut.WorkingDirectory = ShortCutPrograms;
-                shortcut.Save();
             }
 
             DateTime now = DateTime.Now;
@@ -130,7 +113,7 @@ namespace Hours
                     Time = 1,
                     Date = DateNow,
                     NowDate = DateNow,
-                    Minimize = false,
+                    StartWithWindows = false,
                 };
 
                 Directory.CreateDirectory($@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\Hours");
@@ -212,12 +195,17 @@ namespace Hours
                 return;
             }
 
-            // A faire fonctionner car pour l'instant, ne se démarre pas minimiser
+            string ShortCutPrograms = Environment.GetFolderPath(Environment.SpecialFolder.Programs);
 
-            if (x.Minimize == true)
-                CheckBoxStartMinimized.Checked = true;
-                if(StartingByUser == false)
-                    Hide();
+            if (!System.IO.File.Exists($@"{ShortCutPrograms}\Hours.lnk"))
+            {
+                WshShellClass wsh = new WshShellClass();
+                IWshShortcut shortcut = wsh.CreateShortcut($@"{ShortCutPrograms}\Hours.lnk") as IWshShortcut;
+                shortcut.TargetPath = System.Reflection.Assembly.GetEntryAssembly().Location;
+                shortcut.WindowStyle = 1;
+                shortcut.WorkingDirectory = ShortCutPrograms;
+                shortcut.Save();
+            }
 
             /* Check si le temps n'est pas trop abusé si oui on ajoute rien et on dit que le temps à été modifié
              * si non ajoute une seconde & la date
@@ -230,7 +218,7 @@ namespace Hours
                     Time = x.Time + 1,
                     Date = x.Date,
                     NowDate = DateNow,
-                    Minimize = x.Minimize,
+                    StartWithWindows = x.StartWithWindows,
                 };
 
                 System.IO.File.WriteAllText(DataPath, JsonConvert.SerializeObject(timeAdder));
@@ -283,11 +271,6 @@ namespace Hours
             NowDate = x.NowDate;
         }
 
-        private void HoursForm_Load(object sender, EventArgs e)
-        {
-            // Lors du démarage, on lance le timer
-            InitTimer();
-        }
 
         private void HideButton_Click(object sender, EventArgs e)
         {
@@ -339,19 +322,6 @@ namespace Hours
             }
         }
 
-        private void ButtonHelp_Click(object sender, EventArgs e)
-        {
-            // Boutton d'aide
-            MessageBox.Show("Lors du première démarage, un raccourci à été créé afin qu'Hours soit " +
-                "démarré à chaque lancement de votre ordinateur." +
-                "\nUn autre raccourci à été créé afin que vous puissiez trouver Hours en cherchant dans " +
-                "la barre de recherche Windows." +
-                "\n\nLorsque vous démarré votre ordinateur, Hours se lance donc tout seul est se met " +
-                "en tâche de fond. Pour réafficher l'interface, il vous suffira de chercher Hours, et " +
-                "de l'ouvrir, cela stoppera l'autre Hours en tâche de fond et vous affichera par conséquent" +
-                "l'interface avec toutes vos données.", "Aide", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
         private void BackUpFile()
         {
             /* Fonction de backup, a chaque seconde, on check si
@@ -379,24 +349,36 @@ namespace Hours
             string DataPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\Hours\data.json";
             string json = System.IO.File.ReadAllText(DataPath);
             Counter x = JsonConvert.DeserializeObject<Counter>(json);
+            string ShortCutBoot = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
             if (CheckBoxStartMinimized.Checked == true)
             {
+                if (!System.IO.File.Exists($@"{ShortCutBoot}\Hours.lnk"))
+                {
+                    WshShellClass wsh = new WshShellClass();
+                    IWshShortcut shortcut = wsh.CreateShortcut($@"{ShortCutBoot}\Hours.lnk") as IWshShortcut;
+                    shortcut.TargetPath = System.Reflection.Assembly.GetEntryAssembly().Location;
+                    shortcut.WindowStyle = 1;
+                    shortcut.WorkingDirectory = ShortCutBoot;
+                    shortcut.Save();
+                }
+
                 timeAdder = new Counter
                 {
                     Time = x.Time,
                     Date = x.Date,
                     NowDate = x.NowDate,
-                    Minimize = true,
+                    StartWithWindows = true,
                 };
             }
             else
             {
+                System.IO.File.Delete($@"{ShortCutBoot}\Hours.lnk");
                 timeAdder = new Counter
                 {
                     Time = x.Time,
                     Date = x.Date,
                     NowDate = x.NowDate,
-                    Minimize = false,
+                    StartWithWindows = false,
                 };
             }
 

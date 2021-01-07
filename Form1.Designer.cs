@@ -30,7 +30,6 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HoursForm));
             this.TopPanel = new System.Windows.Forms.Panel();
-            this.ButtonHelp = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.MinimizeButton = new System.Windows.Forms.Button();
             this.CloseButton = new System.Windows.Forms.Button();
@@ -55,7 +54,6 @@
             // TopPanel
             // 
             this.TopPanel.BackColor = System.Drawing.Color.DimGray;
-            this.TopPanel.Controls.Add(this.ButtonHelp);
             this.TopPanel.Controls.Add(this.pictureBox1);
             this.TopPanel.Controls.Add(this.MinimizeButton);
             this.TopPanel.Controls.Add(this.CloseButton);
@@ -65,19 +63,6 @@
             this.TopPanel.Size = new System.Drawing.Size(400, 35);
             this.TopPanel.TabIndex = 0;
             this.TopPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseDown);
-            // 
-            // ButtonHelp
-            // 
-            this.ButtonHelp.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.ButtonHelp.FlatAppearance.BorderSize = 0;
-            this.ButtonHelp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ButtonHelp.Location = new System.Drawing.Point(281, 7);
-            this.ButtonHelp.Name = "ButtonHelp";
-            this.ButtonHelp.Size = new System.Drawing.Size(51, 23);
-            this.ButtonHelp.TabIndex = 14;
-            this.ButtonHelp.Text = "Aide";
-            this.ButtonHelp.UseVisualStyleBackColor = false;
-            this.ButtonHelp.Click += new System.EventHandler(this.ButtonHelp_Click);
             // 
             // pictureBox1
             // 
@@ -225,7 +210,7 @@
             // CheckboxArrondir
             // 
             this.CheckboxArrondir.AutoSize = true;
-            this.CheckboxArrondir.Location = new System.Drawing.Point(281, 176);
+            this.CheckboxArrondir.Location = new System.Drawing.Point(257, 176);
             this.CheckboxArrondir.Name = "CheckboxArrondir";
             this.CheckboxArrondir.Size = new System.Drawing.Size(115, 17);
             this.CheckboxArrondir.TabIndex = 11;
@@ -261,11 +246,11 @@
             // CheckBoxStartMinimized
             // 
             this.CheckBoxStartMinimized.AutoSize = true;
-            this.CheckBoxStartMinimized.Location = new System.Drawing.Point(281, 160);
+            this.CheckBoxStartMinimized.Location = new System.Drawing.Point(257, 160);
             this.CheckBoxStartMinimized.Name = "CheckBoxStartMinimized";
-            this.CheckBoxStartMinimized.Size = new System.Drawing.Size(111, 17);
+            this.CheckBoxStartMinimized.Size = new System.Drawing.Size(143, 17);
             this.CheckBoxStartMinimized.TabIndex = 14;
-            this.CheckBoxStartMinimized.Text = "Démarrer minimisé";
+            this.CheckBoxStartMinimized.Text = "Démarrer avec Windows";
             this.CheckBoxStartMinimized.UseVisualStyleBackColor = true;
             this.CheckBoxStartMinimized.CheckedChanged += new System.EventHandler(this.ButtonStartMinimized_CheckedChanged);
             // 
@@ -320,7 +305,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button ButtonShare;
         private System.Windows.Forms.Button ButtonReset;
-        private System.Windows.Forms.Button ButtonHelp;
         private System.Windows.Forms.CheckBox CheckboxArrondir;
         private System.Windows.Forms.CheckBox CheckBoxStartMinimized;
     }
