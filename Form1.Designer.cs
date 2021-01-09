@@ -216,6 +216,7 @@
             this.CheckboxArrondir.TabIndex = 11;
             this.CheckboxArrondir.Text = "Arrondir les valeurs";
             this.CheckboxArrondir.UseVisualStyleBackColor = true;
+            this.CheckboxArrondir.CheckedChanged += new System.EventHandler(this.CheckboxArrondir_CheckedChanged);
             // 
             // ButtonShare
             // 

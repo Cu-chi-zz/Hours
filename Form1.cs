@@ -30,8 +30,8 @@ namespace Hours
         public static string FirstLauch;
         public static string NowDate;
         public static Counter x;
-        public static bool StartingByUser = false;
         public static bool AlreadyMinimizeChecked = false;
+        public static short ToCheckCounter = 0;
 
         [DllImport("user32.dll")]
         public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
@@ -80,6 +80,7 @@ namespace Hours
             public string Date { get; set; }
             public string NowDate { get; set; }
             public bool StartWithWindows { get; set; }
+            public bool RoundValues { get; set; }
         }
 
         private void MainHours()
@@ -114,6 +115,7 @@ namespace Hours
                     Date = DateNow,
                     NowDate = DateNow,
                     StartWithWindows = false,
+                    RoundValues = false,
                 };
 
                 Directory.CreateDirectory($@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\Hours");
@@ -207,10 +209,36 @@ namespace Hours
                 shortcut.Save();
             }
 
+            if(ToCheckCounter == 0)
+            {
+                if(x.StartWithWindows == true)
+                {
+                    CheckBoxStartMinimized.Checked = true;
+                }
+                else
+                {
+                    CheckBoxStartMinimized.Checked = false;
+                }
+                if (x.RoundValues)
+                {
+                    CheckboxArrondir.Checked = true;
+                }
+                else
+                {
+                    CheckboxArrondir.Checked = false;
+                }
+                ToCheckCounter += 10;
+            }
+            else
+            {
+                ToCheckCounter--;
+            }
+
             /* Check si le temps n'est pas trop abusé si oui on ajoute rien et on dit que le temps à été modifié
              * si non ajoute une seconde & la date
              * Effectue une backup
              */
+
             if (x.Time <= 9223372036854775806)
             {
                 Counter timeAdder = new Counter
@@ -219,6 +247,7 @@ namespace Hours
                     Date = x.Date,
                     NowDate = DateNow,
                     StartWithWindows = x.StartWithWindows,
+                    RoundValues = x.RoundValues,
                 };
 
                 System.IO.File.WriteAllText(DataPath, JsonConvert.SerializeObject(timeAdder));
@@ -344,7 +373,6 @@ namespace Hours
 
         private void ButtonStartMinimized_CheckedChanged(object sender, EventArgs e)
         {
-            // Checkbox démarrer minimisé
             Counter timeAdder;
             string DataPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\Hours\data.json";
             string json = System.IO.File.ReadAllText(DataPath);
@@ -368,6 +396,7 @@ namespace Hours
                     Date = x.Date,
                     NowDate = x.NowDate,
                     StartWithWindows = true,
+                    RoundValues = x.RoundValues,
                 };
             }
             else
@@ -379,6 +408,44 @@ namespace Hours
                     Date = x.Date,
                     NowDate = x.NowDate,
                     StartWithWindows = false,
+                    RoundValues = x.RoundValues,
+                };
+            }
+
+            System.IO.File.WriteAllText(DataPath, JsonConvert.SerializeObject(timeAdder));
+            using (StreamWriter file = System.IO.File.CreateText(DataPath))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.Serialize(file, timeAdder);
+            }
+        }
+
+        private void CheckboxArrondir_CheckedChanged(object sender, EventArgs e)
+        {
+            Counter timeAdder;
+            string DataPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\Hours\data.json";
+            string json = System.IO.File.ReadAllText(DataPath);
+            Counter x = JsonConvert.DeserializeObject<Counter>(json);
+            if (CheckboxArrondir.Checked == true)
+            {
+                timeAdder = new Counter
+                {
+                    Time = x.Time,
+                    Date = x.Date,
+                    NowDate = x.NowDate,
+                    StartWithWindows = x.StartWithWindows,
+                    RoundValues = true,
+                };
+            }
+            else
+            {
+                timeAdder = new Counter
+                {
+                    Time = x.Time,
+                    Date = x.Date,
+                    NowDate = x.NowDate,
+                    StartWithWindows = x.StartWithWindows,
+                    RoundValues = false,
                 };
             }
 
