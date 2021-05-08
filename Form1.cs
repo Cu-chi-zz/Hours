@@ -35,6 +35,7 @@ namespace Hours
 
         [DllImport("user32.dll")]
         public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+
         [DllImport("user32.dll")]
         public static extern bool ReleaseCapture();
 
@@ -58,15 +59,21 @@ namespace Hours
             timer1.Interval = 1000;
             timer1.Start();
         }
+
         private void HoursForm_Load(object sender, EventArgs e)
         {
             // Lors du démarage, on lance le timer
             InitTimer();
         }
 
-        private void Timer1_Tick(object sender, EventArgs e) { MainHours(); }
+        private void Timer1_Tick(object sender, EventArgs e)
+        {
+            MainHours();
+        }
+
         // Bouton pour minimiser
         private void MinimizeButton_Click(object sender, EventArgs e) { WindowState = FormWindowState.Minimized; }
+
         // Bouton pour fermer Hours
         private void CloseButton_Click(object sender, EventArgs e)
         {
@@ -85,7 +92,6 @@ namespace Hours
 
         private void MainHours()
         {
-
             // Check si le processus Hours est déjà en cours d'éxecution,
             // pour chaque processus, si l'id du processus est différent du current
             // Fermer le processus qui est actuel (ce qui signifie qu'il y en a eu un nouveau d'ouvert
@@ -209,30 +215,22 @@ namespace Hours
                 shortcut.Save();
             }
 
-            if(ToCheckCounter == 0)
+            if (ToCheckCounter == 0)
             {
-                if(x.StartWithWindows == true)
-                {
+                if (x.StartWithWindows == true)
                     CheckBoxStartMinimized.Checked = true;
-                }
                 else
-                {
                     CheckBoxStartMinimized.Checked = false;
-                }
+
                 if (x.RoundValues)
-                {
                     CheckboxArrondir.Checked = true;
-                }
                 else
-                {
                     CheckboxArrondir.Checked = false;
-                }
+
                 ToCheckCounter += 10;
             }
             else
-            {
                 ToCheckCounter--;
-            }
 
             /* Check si le temps n'est pas trop abusé si oui on ajoute rien et on dit que le temps à été modifié
              * si non ajoute une seconde & la date
@@ -269,7 +267,7 @@ namespace Hours
             double hours = minutes / 60;
             double days = hours / 24;
 
-            if(CheckboxArrondir.Checked == false)
+            if (CheckboxArrondir.Checked == false)
             {
                 // Si l'utilisateur n'a pas coché pour arrondir, on arrondit pas :)
                 LabelSeconds.Text = $"{x.Time} secondes";
@@ -300,7 +298,6 @@ namespace Hours
             NowDate = x.NowDate;
         }
 
-
         private void HideButton_Click(object sender, EventArgs e)
         {
             // Si le bouton pour mettre en arrière plan
@@ -328,7 +325,7 @@ namespace Hours
                 DateTime now = DateTime.Now;
                 string DataPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\Hours";
                 string DateNow = now.ToLocalTime().ToString();
-                if(!Directory.Exists(DataPath + @"\save")) Directory.CreateDirectory(DataPath + @"\save");
+                if (!Directory.Exists(DataPath + @"\save")) Directory.CreateDirectory(DataPath + @"\save");
                 if (!System.IO.File.Exists(DataPath + $@"\save\data-save-{DateNow.Replace(":", ".")}.json")) System.IO.File.Copy(DataPath + @"\data.json", DataPath + $@"\save\data-save-{DateNow.Replace(":", ".")}.json");
                 else
                 {
