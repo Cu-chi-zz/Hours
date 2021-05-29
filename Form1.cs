@@ -96,12 +96,13 @@ namespace Hours
             // pour chaque processus, si l'id du processus est différent du current
             // Fermer le processus qui est actuel (ce qui signifie qu'il y en a eu un nouveau d'ouvert
             // Alors le laisser "prendre le dessus"
-
-            Process[] HoursProc = Process.GetProcessesByName("Hours");
+            
+            Process currentProcess = Process.GetCurrentProcess();
+            Process[] HoursProc = Process.GetProcessesByName(currentProcess.ProcessName);
             foreach (Process phours in HoursProc)
             {
                 // Si ouverture auto true, alors vérifier ça, sinon ne pas effectuer la Hide si rien n'est démarré avant
-                if (phours.Id != Process.GetCurrentProcess().Id)
+                if (phours.Id != currentProcess.Id)
                     Close();
             }
 
